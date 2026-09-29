@@ -30,7 +30,10 @@ button,input{font:inherit;color:inherit}
 #gateErr{min-height:19px;font-size:13px;color:#ffb4a8;margin-top:8px}
 .shake{animation:shake .32s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
-.lockNote{margin:16px 0 0;font-size:11.5px;line-height:1.6;color:#7f9bb2}
+.credit{margin:20px -6px 0;padding-top:13px;border-top:1px solid rgba(255,255,255,.11);
+  font-size:11px;line-height:1.75;color:#7d99b0;text-align:center;letter-spacing:.2px}
+.credit a{color:#a3cbe9;text-decoration:none;border-bottom:1px dotted rgba(163,203,233,.45)}
+.credit a:hover{color:#cfe6fa;border-bottom-color:#cfe6fa}
 
 /* ---------- 主界面 ---------- */
 #app{display:flex;flex-direction:column;height:100%}
@@ -215,7 +218,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
     <input type="password" id="pw" placeholder="请输入访问密码" aria-label="访问密码">
     <div id="gateErr"></div>
     <button type="submit">进入地图</button>
-    <p class="lockNote">静态页面的密码只是一道访问门槛，防不住直接看源码的人；请勿在数据集里放真正的敏感信息。<br>地铁图数据：HappyCode-HC/Beijing-Subway-Map（RailMapGen RMP，2026-08，CC BY 4.0）</p>
+    <p class="credit" id="credit"></p>
   </form>
 </div>
 
@@ -277,7 +280,7 @@ const MAP = {"city":"北京","viewBox":{"x":-32225,"y":-64969,"w":4871,"h":5855}
 const FOOD = [{"station":"国贸","title":"京伦饭店·早茶点心","url":"https://www.dianping.com/shop/k6ZxW1Pqme0OafBI","once":"28","hour":"15","night":"60"},{"station":"国贸","title":"海底捞火锅(国贸店)","url":"https://www.dianping.com/shop/H9zQrYbCpLm3nRxK","once":"","hour":"45","night":"128"},{"station":"国贸","title":"Manner Coffee(建外SOHO店)","url":"https://www.xiaohongshu.com/explore/65012ab4000000001a03c9f7","once":"22","hour":"","night":""},{"station":"大望路","title":"小大董烤鸭(大望路店)","url":"https://www.dianping.com/shop/aQ1wEr3Ty5Ui7oP9","once":"65","hour":"","night":"158"},{"station":"大望路","title":"便利蜂鲜食(华贸店)","url":"https://www.meituan.com/s/bianlifeng-huamao","once":"18","hour":"","night":""},{"station":"永安里","title":"老舍茶馆(永安里)","url":"https://www.dianping.com/shop/b2C3d4E5f6G7h8I9","once":"48","hour":"30","night":""},{"station":"建国门","title":"静一饺子馆(建国门店)","url":"https://www.dianping.com/shop/j1K2l3M4n5O6p7Q8","once":"26","hour":"12","night":"55"},{"station":"建国门","title":"星巴克(北京站店)","url":"https://www.xiaohongshu.com/explore/64b7c2f1000000001f03ab12","once":"35","hour":"","night":""},{"station":"双井","title":"将太无二(双井店)","url":"https://www.dianping.com/shop/r9S0t1U2v3W4x5Y6","once":"88","hour":"52","night":"168"},{"station":"双井","title":"庆丰包子铺(双井店)","url":"https://www.meituan.com/s/qingfeng-shuangjing","once":"16","hour":"9","night":"42"},{"station":"团结湖","title":"vn粉面馆(三里屯东)","url":"https://www.dianping.com/shop/z7A8b9C0d1E2f3G4","once":"55","hour":"28","night":""},{"station":"惠新西街南口","title":"日坛铜锅涮肉","url":"https://www.dianping.com/shop/h5I6j7K8l9M0n1O2","once":"92","hour":"","night":"175"},{"station":"南锣鼓巷","title":"文宇奶酪店","url":"https://www.xiaohongshu.com/explore/65f3a1c2000000000700ab12","once":"18","hour":"","night":""},{"station":"南锣鼓巷","title":"方砖厂69号炸酱面","url":"https://www.dianping.com/shop/p3Q4r5S6t7U8v9W0","once":"32","hour":"20","night":"68"},{"station":"宋家庄","title":"聚宝源涮肉(宋家庄店)","url":"https://www.dianping.com/shop/x1Y2z3A4b5C6d7E8","once":"110","hour":"60","night":"199"},{"station":"公主坟","title":"京味斋(公主坟店)","url":"https://www.dianping.com/shop/f9G0h1I2j3K4l5M6","once":"58","hour":"33","night":""},{"station":"五道口","title":"西部马华牛肉面","url":"https://www.dianping.com/shop/n7O8p9Q0r1S2t3U4","once":"45","hour":"22","night":"80"},{"station":"中关村","title":"海底捞(中关村店)","url":"https://www.meituan.com/s/haidilao-zhongguancun","once":"","hour":"","night":"132"},{"station":"西单","title":"花家怡园(西单店)","url":"https://www.dianping.com/shop/v5W6x7Y8z9A0b1C2","once":"86","hour":"40","night":"165"},{"station":"四惠东站","title":"嘉和一品早餐(四惠东)","url":"https://www.dianping.com/shop/d3E4f5G6h7I8j9K0","once":"21","hour":"","night":""}];
 const PTYPES = [{"key":"once","label":"单次","color":"#2f9e44","buckets":[{"key":"once1","label":"≤20元","min":0,"max":20,"color":"#2f9e44"},{"key":"once2","label":"20-50元","min":20,"max":50,"color":"#1971c2"},{"key":"once3","label":"50元以上","min":50,"max":1000000000,"color":"#c0272b"}]},{"key":"hour","label":"包时","color":"#1971c2","buckets":[{"key":"hour1","label":"≤10元","min":0,"max":10,"color":"#2f9e44"},{"key":"hour2","label":"10-20元","min":10,"max":20,"color":"#1971c2"},{"key":"hour3","label":"20元以上","min":20,"max":1000000000,"color":"#c0272b"}]},{"key":"night","label":"包夜","color":"#7048e8","buckets":[{"key":"night1","label":"≤50元","min":0,"max":50,"color":"#2f9e44"},{"key":"night2","label":"50-100元","min":50,"max":100,"color":"#1971c2"},{"key":"night3","label":"100元以上","min":100,"max":1000000000,"color":"#c0272b"}]}];
 const HASHES = {"sha256":"84cc1b4e0627f551d40ba4f6f83ea28fd1ee8fa08149a557ab0d11d64ef49f0f","fnv":"fnv:acfacc42"};
-const META = {"sessionKey":"mhm.ok","preview":false,"dataFile":"food.csv","note":"地铁图数据：HappyCode-HC/Beijing-Subway-Map（RailMapGen RMP，2026-08，CC BY 4.0）"};
+const META = {"sessionKey":"mhm.ok","preview":false,"dataFile":"food.csv","note":"地铁线路图数据 HappyCode-HC/Beijing-Subway-Map · RailMapGen RMP · 2026-08 · CC BY 4.0","noteUrl":"https://github.com/HappyCode-HC/Beijing-Subway-Map"};
 
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
@@ -297,6 +300,10 @@ async function digest(s) {
 async function ok(s) { const d = await digest(s); return d === HASHES.sha256 || d === HASHES.fnv; }
 
 const gate = $("gate");
+(function credit(){
+  const el = $("credit"); if (!el) return;
+  el.innerHTML = esc(META.note) + ' · <a href="' + esc(META.noteUrl) + '" target="_blank" rel="noopener">查看来源</a>';
+})();
 let booted = false;
 function enterApp() { gate.classList.add("out"); setTimeout(() => (gate.style.display = "none"), 360); $("app").hidden = false; if (!booted) { booted = true; boot(); } }
 function gateInit() {

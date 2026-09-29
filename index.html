@@ -95,7 +95,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 .ctl button:hover{background:#f1f6fa}
 
 /* ---------- 气泡 ---------- */
-.bubble{position:absolute;z-index:9;pointer-events:auto;width:264px;max-width:76vw;background:#fff;
+.bubble{position:absolute;z-index:9;pointer-events:auto;width:302px;max-width:78vw;background:#fff;
   border-radius:13px;border:1px solid #d7dfe6;box-shadow:0 14px 34px rgba(15,40,65,.22);animation:pop .15s ease-out}
 @keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 .bubble .tail{position:absolute;width:13px;height:13px;background:#fff;border-left:1px solid #d7dfe6;border-top:1px solid #d7dfe6}
@@ -109,12 +109,14 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 .bubble ul{margin:0;padding:9px 13px 12px;list-style:none;max-height:min(44vh,320px);overflow:auto}
 .bubble li{padding:8px 0;border-top:1px dashed #e8edf1}
 .bubble li:first-child{border-top:0;padding-top:2px}
-.bubble li>a{display:block;color:#0f62a8;text-decoration:none;font-size:14px;font-weight:600;line-height:1.4;word-break:break-all}
+.bubble li .row{display:flex;align-items:baseline;gap:8px}
+.bubble li>a{flex:1 1 auto;min-width:0;color:#0f62a8;text-decoration:none;font-size:14px;font-weight:600;line-height:1.4}
+.bubble li .pprice+a{overflow-wrap:anywhere}
 .bubble li>a:hover{text-decoration:underline}
 .meta{display:flex;align-items:center;gap:7px;margin-top:4px;font-size:11.5px;color:#6a7a89;flex-wrap:wrap}
 .meta .p{color:#c2540a;font-weight:700}
 .meta .s{background:#f1f4f7;border-radius:4px;padding:1px 6px;color:#546778}
-.pprice{display:inline-flex;align-items:center;gap:4px;border:1px solid #cfe0ee;background:#f2f8fd;color:#0f62a8;
+.pprice{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;border:1px solid #cfe0ee;background:#f2f8fd;color:#0f62a8;
   border-radius:5px;padding:1px 8px;font-size:11.5px;cursor:pointer;font-weight:600}
 .pprice:hover{background:#e4f1fb}
 .pprice i{font-style:normal;font-size:9px;transition:.15s}
@@ -246,18 +248,7 @@ function findStation(name) {
   return one([...byNorm].filter(([key]) => key.length > 1 && (k.startsWith(key) || key.startsWith(k))))
       || one([...byNorm].filter(([key]) => key.length > 1 && (key.includes(k) || k.includes(key))));
 }
-const HOSTCN = { "dianping.com": "大众点评", "meituan.com": "美团", "xiaohongshu.com": "小红书", "douyin.com": "抖音",
-  "bilibili.com": "B站", "zhihu.com": "知乎", "weibo.com": "微博", "amap.com": "高德", "ctrip.com": "携程",
-  "qunar.com": "去哪儿", "163.com": "网易", "qq.com": "腾讯", "sohu.com": "搜狐", "sina.com.cn": "新浪",
-  "sina.cn": "新浪", "google.com": "Google", "dianping.cn": "大众点评", "kudo.qq.com": "京东", "maimai.cn": "脉脉" };
-function shortLink(url) {
-  let u; try { u = new URL(url); } catch (e) { return { url: "#", label: "链接无效" }; }
-  const host = u.hostname.replace(/^www\./, "");
-  const known = Object.keys(HOSTCN).find((h) => host === h || host.endsWith("." + h));
-  const seg = decodeURIComponent(u.pathname.split("/").filter(Boolean).pop() || u.search.slice(1, 9) || "");
-  const tail = seg.replace(/\.(html?|php|aspx?)$/i, "").slice(0, 12);
-  return { url: u.href, label: (known ? HOSTCN[known] : host) + (tail ? " · " + tail : "") };
-}
+const safeUrl = (u) => { try { return new URL(u).href; } catch (e) { return "#"; } };
 const priceNum = (v) => { const n = Number(String(v == null ? "" : v).replace(/[^\d.]/g, "")); return Number.isFinite(n) && n > 0 ? n : null; };
 const typeMap = new Map(PTYPES.map((t) => [t.key, t]));
 const bucketOf = (tk, p) => { const bs = typeMap.get(tk).buckets; return (bs.find((b) => p >= b.min && p < b.max) || bs[bs.length - 1]).key; };
@@ -271,7 +262,7 @@ function buildIndex(rows) {
     const s = findStation(f.station);
     const pr = {};
     PTYPES.forEach((t) => { pr[t.key] = priceNum(f[t.key] != null ? f[t.key] : f[t.label]); });
-    items.push({ station: s ? s.id : null, raw: f, title: f.title || "(未命名)", link: shortLink(f.url), pr });
+    items.push({ station: s ? s.id : null, raw: f, title: f.title || "(未命名)", link: safeUrl(f.url), pr });
     if (!s) unmatched.push(f.station);
   });
   items.forEach((it) => { if (it.station) { if (!foodByStation.has(it.station)) foodByStation.set(it.station, []); foodByStation.get(it.station).push(it); } });
@@ -551,10 +542,9 @@ function select(s) {
     .map((l) => `<b style="--c:${l.color}">${esc(l.name)}</b>`).join("");
   const body = (!list || !list.length)
     ? `<div class="empty">${state.ptype === "all" ? "该站还没有收录美食。" : "当前价格档里该站没有收录，换个标签试试。"}</div>`
-    : `<ul>${list.map((it) => `<li><a href="${esc(it.link.url)}" target="_blank" rel="noopener noreferrer">${esc(it.title)}</a>
-        <div class="meta"><button class="pprice" type="button" aria-expanded="false">${
+    : `<ul>${list.map((it) => `<li><div class="row"><button class="pprice" type="button" aria-expanded="false">${
           state.ptype === "all" ? "价格" : typeMap.get(state.ptype).label + " ¥" + (it.pr[state.ptype] == null ? "—" : it.pr[state.ptype])
-        }<i>▾</i></button><span class="s">${esc(it.link.label)}</span></div>
+        }<i>▾</i></button><a href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">${esc(it.title)}</a></div>
         <div class="pdetail" hidden>${PTYPES.map((t) => `<span class="pd${t.key === state.ptype ? " hi" : ""}"><em>${t.label}</em><b style="--c:${t.color}">${it.pr[t.key] == null ? "—" : "¥" + it.pr[t.key]}</b></span>`).join("")}</div>
       </li>`).join("")}</ul>`;
   const el = document.createElement("div");

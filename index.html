@@ -78,18 +78,21 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
   border:1.5px solid #fff;box-shadow:0 2px 6px rgba(10,30,50,.35);transition:.12s}
 .badge:hover{transform:translate(-50%,-50%) scale(1.22)}
 .badge.on{outline:2.5px solid #16689c;outline-offset:1px}
-.legend{position:absolute;left:12px;bottom:34px;max-width:52vw;padding:8px 10px;border-radius:11px;
+.lgwrap{position:absolute;left:12px;bottom:10px;z-index:6;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.lgbtn{width:38px;height:22px;border-radius:7px;border:1px solid #dde4ea;background:rgba(255,255,255,.94);cursor:pointer;
+  font-size:11px;color:#4b5b69;line-height:1;display:grid;place-items:center;box-shadow:0 1px 3px rgba(20,40,60,.08)}
+.lgbtn:hover{background:#fff;border-color:#b9c8d6}
+.legend{max-width:min(52vw,760px);padding:8px 10px;border-radius:11px;
   background:rgba(255,255,255,.9);border:1px solid #dde4ea;font-size:11.5px;line-height:1.5;
-  display:flex;flex-wrap:wrap;gap:2px 10px;z-index:5}
+  display:flex;flex-wrap:wrap;gap:2px 10px}
+.lgwrap.min .legend{display:none}
 .legend i{display:inline-flex;align-items:center;gap:4px;font-style:normal;color:#4b5b69}
 .legend i b{width:15px;height:4px;border-radius:2px;background:var(--c)}
 .dnote{position:absolute;left:12px;top:10px;max-width:min(70vw,620px);padding:6px 10px;border-radius:8px;font-size:11.5px;
   background:rgba(255,247,225,.95);border:1px solid #f0d9a6;color:#7a5a12;z-index:6;display:none;line-height:1.5}
 .dnote.show{display:block}
-.note,.hint{position:absolute;bottom:9px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.86);
+.hint{position:absolute;right:12px;bottom:9px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.86);
   border:1px solid #dde4ea;font-size:11px;color:#5d6d7b;z-index:5;line-height:1.5}
-.hint{right:12px}
-.note{left:12px;max-width:52vw}
 .ctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:6}
 .ctl button{width:36px;height:34px;border-radius:9px;border:1px solid #cfd8e0;background:#fff;cursor:pointer;font-size:17px;line-height:1}
 .ctl button:hover{background:#f1f6fa}
@@ -131,16 +134,20 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 
 /* ---------- 15 公里通勤圈：右侧分级列表 ---------- */
 #panel{position:absolute;right:10px;top:10px;bottom:10px;width:min(320px,86vw);z-index:12;display:flex;flex-direction:column;
-  background:#fff;border:1px solid #d7dfe6;border-radius:13px;box-shadow:0 14px 34px rgba(15,40,65,.2);overflow:hidden}
+  background:#fff;border:1px solid #d7dfe6;border-radius:13px;box-shadow:0 14px 34px rgba(15,40,65,.2);overflow:hidden;
+  transition:transform .22s ease,opacity .22s ease}
+#panel.off{transform:translateX(calc(100% + 14px));opacity:0}
+.ptab{position:absolute;top:10px;z-index:13;width:30px;height:32px;border-radius:9px;border:1px solid #cfd8e0;background:#fff;
+  cursor:pointer;font-size:12px;color:#33414d;display:grid;place-items:center;box-shadow:0 2px 6px rgba(10,30,50,.14)}
+.ptab:hover{background:#f1f6fa}
+.p-open .ptab{right:calc(min(320px,86vw) + 16px)}
+.p-closed .ptab{right:10px}
 .ph{display:flex;align-items:center;gap:8px;padding:11px 12px 7px}
 .ph b{font-size:14.5px;white-space:nowrap}
-.ph .pc{margin-left:auto}
 .ph2{display:flex;align-items:center;gap:10px;padding:0 12px 8px;border-bottom:1px solid #eef2f5}
 #psum{font-size:11.5px;color:#6a7a89;margin-left:auto;white-space:nowrap}
 .pf{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:#546778;cursor:pointer;user-select:none;white-space:nowrap}
 .pf input{accent-color:#16689c;margin:0}
-.pc{width:22px;height:22px;border:0;border-radius:6px;background:#f1f4f7;cursor:pointer;font-size:14px;line-height:1;color:#5d6d7b;flex:0 0 auto}
-.pc:hover{background:#e3e9ef}
 .pcen{padding:7px 12px;font-size:11.5px;color:#546778;background:#f7fafc;border-bottom:1px solid #eef2f5}
 .pcen b{color:#0d2b3e}
 .plist{list-style:none;margin:0;padding:4px 0;overflow:auto;flex:1 1 auto}
@@ -168,8 +175,16 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 #circle circle{fill:rgba(22,104,156,.07);stroke:#16689c;stroke-width:1.8;stroke-dasharray:7 5;vector-effect:non-scaling-stroke}
 #circle line{stroke:#16689c;stroke-width:1.6;vector-effect:non-scaling-stroke}
 #circle text{font-size:11px;font-weight:700;fill:#0d5688;text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
-@media (min-width:641px){.popen .ctl{right:calc(min(320px,86vw) + 22px)}}
-@media (max-width:640px){#panel{left:8px;right:8px;width:auto;top:auto;height:58%}.legend{display:none}}
+@media (min-width:641px){.p-open .ctl{right:calc(min(320px,86vw) + 52px)}}
+@media (max-width:640px){#panel{left:8px;right:8px;width:auto;top:auto;height:58%}#panel.off{transform:translateY(calc(100% + 14px))}.p-open .ptab,.p-closed .ptab{right:10px;top:auto;bottom:calc(58% + 16px)}.lgwrap{display:none}}
+/* 标题栏里的通勤圈半径选择 */
+.rad{display:flex;align-items:center;gap:6px}
+.rad .lbl{font-size:12px;color:#6a7a89}
+.rb{padding:6px 11px;border-radius:999px;border:1px solid #cfd8e0;background:#fff;cursor:pointer;font-size:13px;transition:.15s}
+.rb:hover{border-color:#9fb6c9}
+.rb.on{background:#16689c;border-color:#16689c;color:#fff;font-weight:600}
+.rb.offb{color:#8b9aa8}
+#radHint{font-size:11.5px;color:#a2681b;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -194,7 +209,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
     <input type="password" id="pw" placeholder="请输入访问密码" aria-label="访问密码">
     <div id="gateErr"></div>
     <button type="submit">进入地图</button>
-    <p class="lockNote">静态页面的密码只是一道访问门槛，防不住直接看源码的人；请勿在数据集里放真正的敏感信息。</p>
+    <p class="lockNote">静态页面的密码只是一道访问门槛，防不住直接看源码的人；请勿在数据集里放真正的敏感信息。<br>地铁图数据：HappyCode-HC/Beijing-Subway-Map（RailMapGen RMP，2026-08，CC BY 4.0）</p>
   </form>
 </div>
 
@@ -209,6 +224,9 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
       </div>
       <button class="btn" id="btnFit">全图</button>
       <button class="btn" id="btnFood">只看有店</button>
+      <div class="rad"><span class="lbl">通勤圈：</span>
+        <button class="rb" data-r="5">5km</button><button class="rb" data-r="10">10km</button><button class="rb" data-r="15">15km</button>
+        <button class="rb offb" id="rOff">关</button><span id="radHint"></span></div>
     </div>
     <nav id="tabs"></nav>
   </header>
@@ -226,18 +244,21 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
     </svg>
     <div id="overlay"></div>
     <aside id="panel" hidden>
-      <div class="ph"><b>15 公里通勤圈</b><button id="pclose" class="pc" aria-label="关闭通勤圈">×</button></div>
+      <div class="ph"><b id="ptitle">通勤圈</b></div>
       <div class="ph2"><label class="pf"><input type="checkbox" id="pfood">只看有美食</label><span id="psum"></span></div>
       <div class="pcen" id="pcen"></div>
       <ul id="plist" class="plist"></ul>
     </aside>
+    <button id="ptab" class="ptab" type="button" hidden aria-label="收起通勤圈列表">▶</button>
     <div class="ctl">
       <button id="zin" title="放大">+</button>
       <button id="zout" title="缩小">−</button>
     </div>
-    <div class="legend" id="legend"></div>
+    <div class="lgwrap" id="lgWrap">
+      <button class="lgbtn" id="lgToggle" type="button" aria-expanded="true" title="收起线路色卡">▾</button>
+      <div class="legend" id="legend"></div>
+    </div>
     <div class="dnote" id="dataNote"></div>
-    <div class="note" id="note"></div>
     <div class="hint">拖动平移 · 滚轮/双指缩放 · 双击放大 · 点站点看美食</div>
   </main>
 </div>
@@ -379,7 +400,7 @@ async function loadData() {
 }
 
 /* ============ 状态 ============ */
-const state = { ptype: "all", range: "all", sel: null, circle: null, foodOnly: false, k: 1, tx: 0, ty: 0 };
+const state = { ptype: "all", range: "all", sel: null, circle: null, radius: 15, panelOpen: true, lgOpen: true, foodOnly: false, k: 1, tx: 0, ty: 0 };
 const stage = $("stage"), view = $("view"), overlay = $("overlay");
 const VB = MAP.viewBox;
 const lineById = new Map(MAP.lines.map((l) => [l.id, l]));
@@ -626,7 +647,7 @@ function select(s) {
   el.className = "bubble";
   el.innerHTML = `<div class="tail"></div><button class="x" aria-label="关闭">×</button>`
     + `<h3>${esc(s.name)}<span>${esc(s.en || "")}</span></h3><div class="lines">${chips}</div>${body}`
-    + `<button class="cbtn${on ? " on" : ""}" type="button">${on ? "✓ 已显示" : "以本站为中心"} 15 公里通勤圈</button>`;
+    + `<button class="cbtn${on ? " on" : ""}" type="button">${on ? "✓ 已显示 " + state.radius : "以本站为中心 " + state.radius} 公里通勤圈</button>`;
   el.__s = s;
   el.querySelector(".x").onclick = (e) => { e.stopPropagation(); closeBubble(); };
   el.querySelector(".cbtn").onclick = (e) => { e.stopPropagation(); setCircle(on ? null : s); select(s); };
@@ -667,34 +688,73 @@ let circleEls = [];   // 圆上的文字标注需要随缩放反向放大
 function setCircle(s) {
   const g = $("circle");
   g.textContent = "";
+  circleEls = [];
   state.circle = s ? s.id : null;
-  inCircle.length = 0; circleEls = [];
-  $("panel").hidden = !s;
-  stage.classList.toggle("popen", !!s);
+  inCircle.length = 0;
   if (s) {
     if (!KM_UNIT) console.warn("地图缺少经纬度，无法计算通勤圈");
     else {
-      const r = 15 / KM_UNIT;
+      const r = state.radius / KM_UNIT;
       mk("circle", { cx: s.x, cy: s.y, r }, g);
       mk("line", { x1: s.x, y1: s.y, x2: s.x + r, y2: s.y }, g);
       const t = mk("text", { x: 0, y: 0 }, g);
-      t.textContent = "15 公里";
+      t.textContent = state.radius + " 公里";
       circleEls.push({ el: t, x: s.x + r / 2, y: s.y });
     }
-    for (const o of MAP.stations) { const d = distKm(s, o); if (d <= 15.0001) inCircle.push({ s: o, d }); }
+    for (const o of MAP.stations) { const d = distKm(s, o); if (d <= state.radius + 1e-4) inCircle.push({ s: o, d }); }
     inCircle.sort((a, b) => a.d - b.d);
   }
+  syncPanel();
+  syncRadius();
   lastInv = -1;
   renderFood();
 }
+function syncPanel() {
+  const has = !!state.circle;
+  $("panel").hidden = !has;
+  $("ptab").hidden = !has;
+  if (!has) { stage.classList.remove("p-open", "p-closed"); return; }
+  $("panel").classList.toggle("off", !state.panelOpen);
+  stage.classList.toggle("p-open", state.panelOpen);
+  stage.classList.toggle("p-closed", !state.panelOpen);
+  const tab = $("ptab");
+  tab.textContent = state.panelOpen ? "▶" : "◀";
+  tab.title = state.panelOpen ? "向右隐藏通勤圈列表" : "向左展开通勤圈列表";
+  tab.setAttribute("aria-label", tab.title);
+}
+$("ptab").onclick = () => { state.panelOpen = !state.panelOpen; syncPanel(); };
+$("pfood").onchange = renderPanel;
+document.querySelectorAll(".rb[data-r]").forEach((b) => {
+  b.onclick = () => {
+    state.radius = Number(b.dataset.r);
+    syncRadius();
+    const hint = $("radHint");
+    if (state.circle) setCircle(stById.get(state.circle));
+    else { hint.textContent = "已选 " + state.radius + "km，点任意地铁站即可画圈"; setTimeout(() => (hint.textContent = ""), 4000); }
+  };
+});
+$("rOff").onclick = () => { setCircle(null); syncRadius(); };
+function syncRadius() {
+  document.querySelectorAll(".rb[data-r]").forEach((b) => b.classList.toggle("on", Number(b.dataset.r) === state.radius && !!state.circle));
+  $("rOff").classList.toggle("on", !state.circle);
+}
+$("lgToggle").onclick = () => {
+  state.lgOpen = !state.lgOpen;
+  $("lgWrap").classList.toggle("min", !state.lgOpen);
+  const b = $("lgToggle");
+  b.textContent = state.lgOpen ? "▾" : "▴";
+  b.title = state.lgOpen ? "收起线路色卡" : "展开线路色卡";
+  b.setAttribute("aria-expanded", String(state.lgOpen));
+};
 function renderPanel() {
   if (!state.circle) return;
   const c = stById.get(state.circle), ul = $("plist");
+  $("ptitle").textContent = state.radius + " 公里通勤圈";
   const bk = state.ptype === "all" ? null : typeMap.get(state.ptype).buckets.find((b) => b.key === state.range);
   const withFood = inCircle.filter((o) => activeFor(o.s.id));
   const rows = $("pfood").checked ? withFood : inCircle;
   $("psum").textContent = `共 ${inCircle.length} 站 · 有美食 ${withFood.length} 站`;
-  $("pcen").innerHTML = `中心：<b>${esc(c.name)}</b> · 半径 15 公里（直线距离）`
+  $("pcen").innerHTML = `中心：<b>${esc(c.name)}</b> · 半径 ${state.radius} 公里（直线距离）`
     + (state.ptype === "all" ? "" : ` · 按 ${esc(typeMap.get(state.ptype).label + (bk ? " " + bk.label : ""))} 过滤`);
   ul.innerHTML = rows.map((o) => {
     const list = activeFor(o.s.id) || [];
@@ -713,8 +773,6 @@ function renderPanel() {
   });
   wirePrices(ul);
 }
-$("pclose").onclick = () => setCircle(null);
-$("pfood").onchange = renderPanel;
 
 /* ============ 手势 ============ */
 const ptrs = new Map();
@@ -723,7 +781,7 @@ const local = (e) => { const r = stage.getBoundingClientRect(); return [e.client
 stage.addEventListener("pointerdown", (e) => {
   // 浮层控件（面板、缩放按钮、图例、气泡、徽标）不参与拖拽：
   // 一旦 setPointerCapture 把指针抓到 stage 上，这些控件就再也收不到 click
-  if (e.target.closest("#panel, .ctl, #overlay, .legend, .note, .hint, .dnote")) return;
+  if (e.target.closest("#panel, .ptab, .ctl, #overlay, .lgwrap, .hint, .dnote")) return;
   const p = local(e); ptrs.set(e.pointerId, p); moved = 0;
   if (ptrs.size === 1) { pan = { sx: p[0], sy: p[1], lx: p[0], ly: p[1], tx: state.tx, ty: state.ty }; stage.classList.add("drag"); }
   else if (ptrs.size === 2) { const a = [...ptrs.values()];
@@ -796,7 +854,8 @@ function applyQuery() {
   const z = Number(q.get("zoom"));
   if (z) { const k = fitScale() * z; setView(k, stage.clientWidth / 2 - (VB.x + VB.w / 2) * k, stage.clientHeight / 2 - (VB.y + VB.h / 2) * k); }
   const name = q.get("station");
-  if (name) { const s = findStation(name); if (s) { const kk = Math.max(state.k, fitScale() * 3.2); setView(kk, stage.clientWidth / 2 - s.x * kk, stage.clientHeight / 2 - s.y * kk); select(s); if (q.get("circle") === "1") setCircle(s); } else console.warn("deep-link 站点未找到:", name); }
+  if (name) { const s = findStation(name); if (s) { const kk = Math.max(state.k, fitScale() * 3.2); setView(kk, stage.clientWidth / 2 - s.x * kk, stage.clientHeight / 2 - s.y * kk); select(s); if (q.get("r")) { state.radius = Math.max(1, Number(q.get("r")) || 15); }
+        if (q.get("circle") === "1") setCircle(s); } else console.warn("deep-link 站点未找到:", name); }
 }
 
 /* ============ 启动 ============ */
@@ -804,8 +863,7 @@ function boot() {
   buildMap();
   $("legend").innerHTML = MAP.lines.filter((l) => l.id !== "other" && l.id !== "np")
     .map((l) => `<i><b style="--c:${l.color}"></b>${esc(l.name)}</i>`).join("");
-  $("note").textContent = META.note;
-  buildTabs(); initSearch(); centerView(); applyQuery(); renderFood(); loadData();
+  buildTabs(); initSearch(); centerView(); syncRadius(); applyQuery(); renderFood(); loadData();
   if (unmatched.length) console.warn("以下站名没能匹配到地铁图上的站点：", [...new Set(unmatched)]);
 }
 gateInit();

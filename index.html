@@ -166,6 +166,9 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 .cbtn:hover{background:#e4f1fb}
 .cbtn.on{background:#16689c;border-color:#16689c;color:#fff}
 #circle circle{fill:rgba(22,104,156,.07);stroke:#16689c;stroke-width:1.8;stroke-dasharray:7 5;vector-effect:non-scaling-stroke}
+#circle line{stroke:#16689c;stroke-width:1.6;vector-effect:non-scaling-stroke}
+#circle text{font-size:11px;font-weight:700;fill:#0d5688;text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+@media (min-width:641px){.popen .ctl{right:calc(min(320px,86vw) + 22px)}}
 @media (max-width:640px){#panel{left:8px;right:8px;width:auto;top:auto;height:58%}.legend{display:none}}
 </style>
 </head>
@@ -495,8 +498,7 @@ function renderFood() {
     const color = state.ptype === "all" ? "#e05a3d" : (cols.length === 1 ? cols[0] : "#c0272b");
     let b = badgeEls.get(id);
     if (!b) { b = document.createElement("div"); b.className = "badge";
-      b.onclick = (e) => { e.stopPropagation(); select(s); };
-      b.addEventListener("pointerdown", (e) => e.stopPropagation());
+      b.onclick = () => select(s);
       overlay.appendChild(b); badgeEls.set(id, b); }
     b.textContent = list.length;
     b.style.setProperty("--c", color);
@@ -529,6 +531,7 @@ function draw() {
     lastInv = inv;
     for (const o of screenEls) o.el.setAttribute("transform", `translate(${o.x},${o.y}) scale(${inv})`);
     ringEls.forEach((o) => o.el.setAttribute("transform", `translate(${o.x},${o.y}) scale(${inv})`));
+    for (const o of circleEls) o.el.setAttribute("transform", `translate(${o.x},${o.y}) scale(${inv})`);
   }
   badgeEls.forEach((b, id) => {
     const s = stById.get(id), [x, y] = toScreen(s.x, s.y);
@@ -625,7 +628,6 @@ function select(s) {
     + `<h3>${esc(s.name)}<span>${esc(s.en || "")}</span></h3><div class="lines">${chips}</div>${body}`
     + `<button class="cbtn${on ? " on" : ""}" type="button">${on ? "✓ 已显示" : "以本站为中心"} 15 公里通勤圈</button>`;
   el.__s = s;
-  el.addEventListener("pointerdown", (e) => e.stopPropagation());
   el.querySelector(".x").onclick = (e) => { e.stopPropagation(); closeBubble(); };
   el.querySelector(".cbtn").onclick = (e) => { e.stopPropagation(); setCircle(on ? null : s); select(s); };
   wirePrices(el, () => positionBubble(s));
@@ -661,18 +663,28 @@ function distKm(a, b) {
   return 2 * R_EARTH * Math.asin(Math.sqrt(h));
 }
 const inCircle = [];
+let circleEls = [];   // 圆上的文字标注需要随缩放反向放大
 function setCircle(s) {
   const g = $("circle");
   g.textContent = "";
   state.circle = s ? s.id : null;
-  inCircle.length = 0;
+  inCircle.length = 0; circleEls = [];
   $("panel").hidden = !s;
+  stage.classList.toggle("popen", !!s);
   if (s) {
     if (!KM_UNIT) console.warn("地图缺少经纬度，无法计算通勤圈");
-    else mk("circle", { cx: s.x, cy: s.y, r: 15 / KM_UNIT }, g);
+    else {
+      const r = 15 / KM_UNIT;
+      mk("circle", { cx: s.x, cy: s.y, r }, g);
+      mk("line", { x1: s.x, y1: s.y, x2: s.x + r, y2: s.y }, g);
+      const t = mk("text", { x: 0, y: 0 }, g);
+      t.textContent = "15 公里";
+      circleEls.push({ el: t, x: s.x + r / 2, y: s.y });
+    }
     for (const o of MAP.stations) { const d = distKm(s, o); if (d <= 15.0001) inCircle.push({ s: o, d }); }
     inCircle.sort((a, b) => a.d - b.d);
   }
+  lastInv = -1;
   renderFood();
 }
 function renderPanel() {
@@ -709,6 +721,9 @@ const ptrs = new Map();
 let pan = null, pinch = null, moved = 0;
 const local = (e) => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
 stage.addEventListener("pointerdown", (e) => {
+  // 浮层控件（面板、缩放按钮、图例、气泡、徽标）不参与拖拽：
+  // 一旦 setPointerCapture 把指针抓到 stage 上，这些控件就再也收不到 click
+  if (e.target.closest("#panel, .ctl, #overlay, .legend, .note, .hint, .dnote")) return;
   const p = local(e); ptrs.set(e.pointerId, p); moved = 0;
   if (ptrs.size === 1) { pan = { sx: p[0], sy: p[1], lx: p[0], ly: p[1], tx: state.tx, ty: state.ty }; stage.classList.add("drag"); }
   else if (ptrs.size === 2) { const a = [...ptrs.values()];

@@ -1,4 +1,5 @@
-地铁站名称,美食标题,美食网址,人均价格
-国贸,示例：京伦饭店早茶点心,https://www.dianping.com/shop/example0001,98
-西单,示例：花家怡园烤鸭,https://www.dianping.com/shop/example0002,86
-南锣鼓巷,示例：文宇奶酪店,https://www.xiaohongshu.com/explore/example0003,18
+地铁站名称,美食标题,美食网址,单次,包时,包夜
+国贸,示例：京伦饭店早茶点心,https://www.dianping.com/shop/example0001,28,15,60
+西单,示例：花家怡园烤鸭,https://www.dianping.com/shop/example0002,55,8,120
+南锣鼓巷,示例：文宇奶酪店,https://www.xiaohongshu.com/explore/example0003,12,22,40
+五道口,示例：西部马华牛肉面,https://www.dianping.com/shop/example0004,18,12,

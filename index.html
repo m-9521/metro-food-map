@@ -59,7 +59,9 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 .tab.on .n{color:rgba(255,255,255,.82)}
 
 /* ---------- 地图舞台 ---------- */
-#stage{position:relative;flex:1 1 auto;overflow:hidden;background:#eef2f6;touch-action:none;cursor:grab}
+#stage{position:relative;flex:1 1 auto;overflow:hidden;background:#eef2f6;touch-action:none;cursor:grab;
+  user-select:none;-webkit-user-select:none;-moz-user-select:none}
+#panel,.bubble,#dataNote{user-select:text;-webkit-user-select:text}
 #stage.drag{cursor:grabbing}
 #svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .dot{fill:#fff;stroke:#33414d;stroke-width:1.4}
@@ -79,8 +81,8 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 .badge:hover{transform:translate(-50%,-50%) scale(1.22)}
 .badge.on{outline:2.5px solid #16689c;outline-offset:1px}
 .lgwrap{position:absolute;left:12px;bottom:10px;z-index:6;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
-.lgbtn{width:38px;height:22px;border-radius:7px;border:1px solid #dde4ea;background:rgba(255,255,255,.94);cursor:pointer;
-  font-size:11px;color:#4b5b69;line-height:1;display:grid;place-items:center;box-shadow:0 1px 3px rgba(20,40,60,.08)}
+.lgbtn{width:30px;height:22px;border-radius:7px;border:1px solid #cfd8e0;background:#fff;cursor:pointer;
+  font-size:12px;color:#4b5b69;line-height:1;display:grid;place-items:center;box-shadow:0 1px 3px rgba(20,40,60,.08)}
 .lgbtn:hover{background:#fff;border-color:#b9c8d6}
 .legend{max-width:min(52vw,760px);padding:8px 10px;border-radius:11px;
   background:rgba(255,255,255,.9);border:1px solid #dde4ea;font-size:11.5px;line-height:1.5;
@@ -142,10 +144,10 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
   transition:transform .22s ease,opacity .22s ease}
 #panel.off{transform:translateX(calc(100% + 14px));opacity:0}
 .ptab{position:absolute;top:10px;right:12px;z-index:13;width:30px;height:32px;border-radius:9px;border:1px solid #cfd8e0;background:#fff;
-  cursor:pointer;font-size:12px;color:#33414d;display:grid;place-items:center;box-shadow:0 2px 6px rgba(10,30,50,.14)}
+  cursor:pointer;font-size:12px;line-height:1;color:#33414d;display:grid;place-items:center;box-shadow:0 2px 6px rgba(10,30,50,.14)}
 .ptab:hover{background:#f1f6fa}
 [hidden]{display:none !important}
-.p-open .ptab,.p-closed .ptab{right:calc(min(320px,86vw) + 16px)}
+.p-open .ptab{right:calc(min(320px,86vw) + 16px)}
 .ph{display:flex;align-items:center;gap:8px;padding:11px 12px 7px}
 .ph b{font-size:14.5px;white-space:nowrap}
 .ph2{display:flex;align-items:center;gap:10px;padding:0 12px 8px;border-bottom:1px solid #eef2f5}
@@ -179,7 +181,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
 #circle circle{fill:rgba(22,104,156,.07);stroke:#16689c;stroke-width:1.8;stroke-dasharray:7 5;vector-effect:non-scaling-stroke}
 #circle line{stroke:#16689c;stroke-width:1.6;vector-effect:non-scaling-stroke}
 #circle text{font-size:11px;font-weight:700;fill:#0d5688;text-anchor:middle;dominant-baseline:middle;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
-@media (min-width:641px){.p-open .ctl,.p-closed .ctl{right:calc(min(320px,86vw) + 16px)}}
+@media (min-width:641px){.p-open .ctl{right:calc(min(320px,86vw) + 16px)}}
 @media (max-width:640px){#panel{left:8px;right:8px;width:auto;top:auto;height:58%}#panel.off{transform:translateY(calc(100% + 14px))}.p-open .ptab,.p-closed .ptab{right:10px;top:auto;bottom:calc(58% + 16px)}.lgwrap{display:none}}
 /* 标题栏里的通勤圈半径选择 */
 .rad{display:flex;align-items:center;gap:6px}
@@ -230,7 +232,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
       <button class="btn" id="btnFood">只看有店</button>
       <div class="rad"><span class="lbl">通勤圈：</span>
         <button class="rb" data-r="5">5km</button><button class="rb" data-r="10">10km</button><button class="rb" data-r="15">15km</button>
-        <button class="rb offb" id="rOff">关</button><span id="radHint"></span></div>
+        <span id="radHint"></span></div>
     </div>
     <nav id="tabs"></nav>
   </header>
@@ -253,7 +255,7 @@ header{flex:0 0 auto;background:#fff;border-bottom:1px solid #dfe5ea;box-shadow:
       <div class="pcen" id="pcen"></div>
       <ul id="plist" class="plist"></ul>
     </aside>
-    <button id="ptab" class="ptab" type="button" hidden aria-label="收起通勤圈列表">▶</button>
+    <button id="ptab" class="ptab" type="button" hidden aria-label="收起通勤圈列表">▸</button>
     <div class="ctl">
       <button id="zin" title="放大">+</button>
       <button id="zout" title="缩小">−</button>
@@ -660,7 +662,7 @@ function select(s) {
   el.className = "bubble";
   el.innerHTML = `<div class="tail"></div><button class="x" aria-label="关闭">×</button>`
     + `<h3>${esc(s.name)}<span>${esc(s.en || "")}</span></h3><div class="lines">${chips}</div>${body}`
-    + `<button class="cbtn${on ? " on" : ""}" type="button">${on ? "✓ 已显示 " + state.radius : "以本站为中心 " + state.radius} 公里通勤圈</button>`;
+    + `<button class="cbtn${on ? " on" : ""}" type="button">${on ? "✓ " + state.radius + " 公里通勤圈 · 再点取消" : "以本站为中心 " + state.radius + " 公里通勤圈"}</button>`;
   el.__s = s;
   el.querySelector(".x").onclick = (e) => { e.stopPropagation(); closeBubble(); };
   el.querySelector(".cbtn").onclick = (e) => { e.stopPropagation(); setCircle(on ? null : s); select(s); };
@@ -731,7 +733,7 @@ function syncPanel() {
   stage.classList.toggle("p-open", state.panelOpen);
   stage.classList.toggle("p-closed", !state.panelOpen);
   const tab = $("ptab");
-  tab.textContent = state.panelOpen ? "▶" : "◀";
+  tab.textContent = state.panelOpen ? "▸" : "◂";
   tab.title = state.panelOpen ? "向右隐藏通勤圈列表" : "向左展开通勤圈列表";
   tab.setAttribute("aria-label", tab.title);
 }
@@ -746,10 +748,8 @@ document.querySelectorAll(".rb[data-r]").forEach((b) => {
     else { hint.textContent = "已选 " + state.radius + "km，点任意地铁站即可画圈"; setTimeout(() => (hint.textContent = ""), 4000); }
   };
 });
-$("rOff").onclick = () => { setCircle(null); syncRadius(); };
 function syncRadius() {
   document.querySelectorAll(".rb[data-r]").forEach((b) => b.classList.toggle("on", Number(b.dataset.r) === state.radius && !!state.circle));
-  $("rOff").classList.toggle("on", !state.circle);
 }
 $("lgToggle").onclick = () => {
   state.lgOpen = !state.lgOpen;

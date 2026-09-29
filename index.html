@@ -280,7 +280,7 @@ const MAP = {"city":"北京","viewBox":{"x":-32225,"y":-64969,"w":4871,"h":5855}
 const FOOD = [{"station":"国贸","title":"京伦饭店·早茶点心","url":"https://www.dianping.com/shop/k6ZxW1Pqme0OafBI","once":"28","hour":"15","night":"60"},{"station":"国贸","title":"海底捞火锅(国贸店)","url":"https://www.dianping.com/shop/H9zQrYbCpLm3nRxK","once":"","hour":"45","night":"128"},{"station":"国贸","title":"Manner Coffee(建外SOHO店)","url":"https://www.xiaohongshu.com/explore/65012ab4000000001a03c9f7","once":"22","hour":"","night":""},{"station":"大望路","title":"小大董烤鸭(大望路店)","url":"https://www.dianping.com/shop/aQ1wEr3Ty5Ui7oP9","once":"65","hour":"","night":"158"},{"station":"大望路","title":"便利蜂鲜食(华贸店)","url":"https://www.meituan.com/s/bianlifeng-huamao","once":"18","hour":"","night":""},{"station":"永安里","title":"老舍茶馆(永安里)","url":"https://www.dianping.com/shop/b2C3d4E5f6G7h8I9","once":"48","hour":"30","night":""},{"station":"建国门","title":"静一饺子馆(建国门店)","url":"https://www.dianping.com/shop/j1K2l3M4n5O6p7Q8","once":"26","hour":"12","night":"55"},{"station":"建国门","title":"星巴克(北京站店)","url":"https://www.xiaohongshu.com/explore/64b7c2f1000000001f03ab12","once":"35","hour":"","night":""},{"station":"双井","title":"将太无二(双井店)","url":"https://www.dianping.com/shop/r9S0t1U2v3W4x5Y6","once":"88","hour":"52","night":"168"},{"station":"双井","title":"庆丰包子铺(双井店)","url":"https://www.meituan.com/s/qingfeng-shuangjing","once":"16","hour":"9","night":"42"},{"station":"团结湖","title":"vn粉面馆(三里屯东)","url":"https://www.dianping.com/shop/z7A8b9C0d1E2f3G4","once":"55","hour":"28","night":""},{"station":"惠新西街南口","title":"日坛铜锅涮肉","url":"https://www.dianping.com/shop/h5I6j7K8l9M0n1O2","once":"92","hour":"","night":"175"},{"station":"南锣鼓巷","title":"文宇奶酪店","url":"https://www.xiaohongshu.com/explore/65f3a1c2000000000700ab12","once":"18","hour":"","night":""},{"station":"南锣鼓巷","title":"方砖厂69号炸酱面","url":"https://www.dianping.com/shop/p3Q4r5S6t7U8v9W0","once":"32","hour":"20","night":"68"},{"station":"宋家庄","title":"聚宝源涮肉(宋家庄店)","url":"https://www.dianping.com/shop/x1Y2z3A4b5C6d7E8","once":"110","hour":"60","night":"199"},{"station":"公主坟","title":"京味斋(公主坟店)","url":"https://www.dianping.com/shop/f9G0h1I2j3K4l5M6","once":"58","hour":"33","night":""},{"station":"五道口","title":"西部马华牛肉面","url":"https://www.dianping.com/shop/n7O8p9Q0r1S2t3U4","once":"45","hour":"22","night":"80"},{"station":"中关村","title":"海底捞(中关村店)","url":"https://www.meituan.com/s/haidilao-zhongguancun","once":"","hour":"","night":"132"},{"station":"西单","title":"花家怡园(西单店)","url":"https://www.dianping.com/shop/v5W6x7Y8z9A0b1C2","once":"86","hour":"40","night":"165"},{"station":"四惠东站","title":"嘉和一品早餐(四惠东)","url":"https://www.dianping.com/shop/d3E4f5G6h7I8j9K0","once":"21","hour":"","night":""}];
 const PTYPES = [{"key":"once","label":"单次","color":"#2f9e44","buckets":[{"key":"once1","label":"≤20元","min":0,"max":20,"color":"#2f9e44"},{"key":"once2","label":"20-50元","min":20,"max":50,"color":"#1971c2"},{"key":"once3","label":"50元以上","min":50,"max":1000000000,"color":"#c0272b"}]},{"key":"hour","label":"包时","color":"#1971c2","buckets":[{"key":"hour1","label":"≤10元","min":0,"max":10,"color":"#2f9e44"},{"key":"hour2","label":"10-20元","min":10,"max":20,"color":"#1971c2"},{"key":"hour3","label":"20元以上","min":20,"max":1000000000,"color":"#c0272b"}]},{"key":"night","label":"包夜","color":"#7048e8","buckets":[{"key":"night1","label":"≤50元","min":0,"max":50,"color":"#2f9e44"},{"key":"night2","label":"50-100元","min":50,"max":100,"color":"#1971c2"},{"key":"night3","label":"100元以上","min":100,"max":1000000000,"color":"#c0272b"}]}];
 const HASHES = {"sha256":"84cc1b4e0627f551d40ba4f6f83ea28fd1ee8fa08149a557ab0d11d64ef49f0f","fnv":"fnv:acfacc42"};
-const META = {"sessionKey":"mhm.ok","preview":false,"dataFile":"food.csv","note":"地铁线路图数据 HappyCode-HC/Beijing-Subway-Map · RailMapGen RMP · 2026-08 · CC BY 4.0","noteUrl":"https://github.com/HappyCode-HC/Beijing-Subway-Map"};
+const META = {"sessionKey":"mhm.ok","preview":false,"dataFile":"food.csv","localFile":"food-data.js","note":"地铁线路图数据 HappyCode-HC/Beijing-Subway-Map · RailMapGen RMP · 2026-08 · CC BY 4.0","noteUrl":"https://github.com/HappyCode-HC/Beijing-Subway-Map"};
 
 const $ = (id) => document.getElementById(id);
 const NS = "http://www.w3.org/2000/svg";
@@ -291,15 +291,22 @@ function mk(tag, a, parent) { const e = document.createElementNS(NS, tag); for (
 function fnv(str) { let h = 0x811c9dc5; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); }
 async function digest(s) {
   const t = s.trim();
-  if (self.crypto && crypto.subtle) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
-    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-  }
+  try {
+    if (self.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+  } catch (e) { /* 非安全上下文下 subtle 会抛错，退回本地哈希 */ }
   return "fnv:" + fnv(t);
 }
 async function ok(s) { const d = await digest(s); return d === HASHES.sha256 || d === HASHES.fnv; }
 
 const gate = $("gate");
+// file:// 下部分浏览器会禁 storage，取值失败不能把登录门卡死
+const store = {
+  get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} },
+};
 (function credit(){
   const el = $("credit"); if (!el) return;
   el.innerHTML = esc(META.note) + ' · <a href="' + esc(META.noteUrl) + '" target="_blank" rel="noopener">查看来源</a>';
@@ -307,12 +314,12 @@ const gate = $("gate");
 let booted = false;
 function enterApp() { gate.classList.add("out"); setTimeout(() => (gate.style.display = "none"), 360); $("app").hidden = false; if (!booted) { booted = true; boot(); } }
 function gateInit() {
-  if (META.preview || sessionStorage.getItem(META.sessionKey) === "1") return enterApp();
+  if (META.preview || store.get(META.sessionKey) === "1") return enterApp();
   const form = $("gateForm"), err = $("gateErr"), pw = $("pw");
   setTimeout(() => pw.focus(), 120);
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (await ok(pw.value)) { sessionStorage.setItem(META.sessionKey, "1"); form.reset(); enterApp(); }
+    if (await ok(pw.value)) { store.set(META.sessionKey, "1"); form.reset(); enterApp(); }
     else { err.textContent = "密码不正确，请重试"; pw.select();
       const c = document.querySelector(".card"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake"); }
   });
@@ -386,7 +393,11 @@ function parseFoodCsv(text) {
     once: i1 >= 0 ? r[i1] : "", hour: i2 >= 0 ? r[i2] : "", night: i3 >= 0 ? r[i3] : "" })).filter((o) => o.station);
 }
 
-/* 运行时读取数据集：在仓库里覆盖 food.csv 即可更新页面，不需要重新构建 */
+function loadScript(src) {
+  return new Promise((res) => { const s = document.createElement("script"); s.src = src;
+    s.onload = s.onerror = () => res(); document.head.appendChild(s); });
+}
+/* 运行时读取数据集：在线覆盖 food.csv，离线覆盖 food-data.js，都不需要重新构建 */
 let noteMsg = "", noteHide = false;
 function paintNote() {
   const has = !!noteMsg;
@@ -398,18 +409,27 @@ $("dnoteBtn").onclick = () => { noteHide = true; paintNote(); };
 $("dnoteChip").onclick = () => { noteHide = false; paintNote(); };
 async function loadData() {
   const setNote = (msg) => { noteMsg = msg || ""; noteHide = false; paintNote(); };
-  let rows = null, how = "内联兜底";
-  try {
-    const res = await fetch(META.dataFile + "?t=" + Date.now(), { cache: "no-store" });
-    if (res.ok) {
-      const txt = (await res.text()).replace(/^﻿/, "");
-      rows = /^\s*[\[{]/.test(txt) ? JSON.parse(txt) : parseFoodCsv(txt);
-      how = META.dataFile;
-    } else setNote(`数据集 ${META.dataFile} 读取失败（HTTP ${res.status}），暂用页面内置副本`);
-  } catch (e) {
-    setNote(`未能读取 ${META.dataFile}（${location.protocol === "file:" ? "本地 file:// 打开不支持" : e.message}），当前显示页面内置副本`);
+  let rows = null, how = "内置副本";
+  if (location.protocol === "file:" && !window.FOOD_DATA) await loadScript(META.localFile);   // 离线双击时才需要
+  // food-data.js 提供 window.FOOD_DATA：file:// 双击打开时只能靠它（浏览器不允许 file:// 下 fetch 本地文件）
+  const local = Array.isArray(window.FOOD_DATA) ? window.FOOD_DATA : null;
+  if (location.protocol === "file:") {
+    if (local) { rows = local; how = META.localFile; }
+    else setNote("没找到本地数据库 " + META.localFile + "，暂时只显示页面内置副本。跑一下「转换数据.bat」就会生成它。");
+  } else {
+    try {
+      const res = await fetch(META.dataFile + "?t=" + Date.now(), { cache: "no-store" });
+      if (res.ok) {
+        const txt = (await res.text()).replace(/^﻿/, "");
+        rows = /^\s*[[{]/.test(txt) ? JSON.parse(txt) : parseFoodCsv(txt);
+        how = META.dataFile;
+      } else setNote("数据集 " + META.dataFile + " 读取失败（HTTP " + res.status + "），改用" + (local ? META.localFile : "页面内置副本"));
+    } catch (e) {
+      setNote("未能读取 " + META.dataFile + "（" + e.message + "），改用" + (local ? META.localFile : "页面内置副本"));
+    }
+    if (!rows && local) { rows = local; how = META.localFile; }
   }
-  if (rows) buildIndex(rows.length ? rows : FOOD);
+  buildIndex(rows && rows.length ? rows : FOOD);
   const keep = state.sel;
   closeBubble();
   if (state.ptype !== "all" && !items.some((i) => i.pr[state.ptype] != null)) { state.ptype = "all"; state.range = "all"; }
